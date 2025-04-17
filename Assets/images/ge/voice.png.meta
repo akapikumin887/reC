@@ -160,10 +160,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      voice_0: -2704667508658655600
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
-  assetBundleName: myassetbundle
+  assetBundleName: 
   assetBundleVariant: 
