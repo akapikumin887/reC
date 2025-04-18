@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using UniRx;
 using UnityEngine;
 
 public class GameModel : IModel
@@ -12,8 +13,9 @@ public class GameModel : IModel
     private StringReader reader;
 
     public List<int> quizNum { get; private set; } = new();
-    // 画像は9枚の3問分用意したいので読み込み方を考える
     private bool[] selected = new bool[9];
+
+    public Subject<Unit> wrongSubject = new();
 
     public void Initialize() { }
 
@@ -80,5 +82,27 @@ public class GameModel : IModel
     public void SelectImages(int num)
     {
         selected[num] = !selected[num];
+    }
+
+    public void JudgeQuiz(List<QuizTemplate> quizTemplates)
+    {
+        Debug.Log(quizTemplates[quizNum[0] - 1]);
+        for(int i = 0;i < selected.Length;i++)
+        {
+            if (selected[i] != quizTemplates[quizNum[0] - 1].usedImageList[i].isCorrect)
+            {
+                // 不正解なので赤字で警告を出す
+                wrongSubject.OnNext(Unit.Default);
+                return;
+            }
+        }
+
+        // 正解なので次の問題を出す
+
+    }
+
+    public IObservable<Unit> wrongAnswer
+    {
+        get { return wrongSubject; }
     }
 }

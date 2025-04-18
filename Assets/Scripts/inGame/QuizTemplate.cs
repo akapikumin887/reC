@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class QuizTemplate
 {
@@ -10,16 +11,13 @@ public class QuizTemplate
     public string text {  get; }
     public bool used {  get; }
     public int imageCount { get; }
-    public int answerImageCount { get; }
-    public List<int> usedImageList { get; }
+    public List<int> answerImageCount { get; } = new List<int>();
+    public List<UseImageMap> usedImageList { get; }
 
     [field: SerializeField]
     public Image[] images { get; private set; } = new Image[9];
 
-    private QuizTemplate()
-    {
-        
-    }
+    private QuizTemplate() {}
 
     public QuizTemplate(string line)
     {
@@ -31,38 +29,70 @@ public class QuizTemplate
         text = words[2];
         used = words[3] == "t";
         imageCount = int.Parse(words[4] == "" ? "0" : words[4]);
-        answerImageCount = int.Parse(words[5] == "" ? "0" : words[5]);
-        usedImageList = new List<int>();
+
+        string[] nums = words[5].Split(' ');
+        foreach (string num in nums)
+        {
+            if (num == string.Empty)
+                break;
+            answerImageCount.Add(int.Parse(num));
+        }
+
+        usedImageList = new List<UseImageMap>();
 
         if (imageCount == 0)
             return;
 
-        for(int i = 1; i <= 9; i++)
+        if (imageCount == 9)
         {
-            if (imageCount == 9)
+            for (int i = 1; i <= 9; i++)
             {
                 // ˆê–‡ŠG‚Ì‰æ‘œ–â‘è‚È‚Ì‚Å1‚©‚ç9‚ð‚»‚Ì‚Ü‚ÜŠi”[‚·‚é
-                usedImageList.Add(i);
+                usedImageList.Add(new UseImageMap(i, answerImageCount.Contains(i)));
             }
-            else if (imageCount < 9)
+        }
+        else if (imageCount < 9)
+        {
+            for (int i = 1; i <= 9; i++)
             {
                 // “¯‚¶‰æ‘œ‚ð•¡”‘I‘ðŽˆ‚ÉŠÜ‚Þ–â‘è‚È‚Ì‚ÅA”í‚è‚ ‚è‚Åƒ‰ƒ“ƒ_ƒ€‚ÉŠi”[‚·‚é
                 System.Random random = new();
                 int num = random.Next(1, imageCount + 1);
-                usedImageList.Add(num);
+                usedImageList.Add(new UseImageMap(num, answerImageCount.Contains(i)));
             }
-            else if (answerImageCount < imageCount)
+        }
+        else if (answerImageCount.Count < imageCount)
+        {
+            for (int i = 1; i <= 9; i++)
             {
                 // ‘I‘ðŽˆ‚ª•\Ž¦‰æ‘œ”‚æ‚è‘½‚¢‚Ì‚ÅA”í‚è‚È‚µ‚Åƒ‰ƒ“ƒ_ƒ€‚ÉŠi”[‚·‚é
                 System.Random random = new();
                 int num = random.Next(1, imageCount + 1);
 
-                if (!usedImageList.Contains(num))
+                for (int j = 0; j < usedImageList.Count; j++)
                 {
-                    usedImageList.Add(num);
+                    if (usedImageList[j].useImageNum == num)
+                        continue;
+
+                    usedImageList.Add(new UseImageMap(i, answerImageCount.Contains(i)));
                 }
             }
+
         }
 
+    }
+
+    public class UseImageMap
+    {
+        public int  useImageNum { get; private set; }
+        public bool isCorrect {  get; private set; }
+
+        private UseImageMap() {}
+
+        public UseImageMap(int useImageNum, bool isCorrect)
+        {
+            this.useImageNum = useImageNum;
+            this.isCorrect = isCorrect;
+        }
     }
 }

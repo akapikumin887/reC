@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,11 +13,18 @@ public class GameView : MonoBehaviour, IView
     [SerializeField]
     private float ChangeButtonFrame;
     [field: SerializeField]
-    public GameObject self {  get; private set; }
+    public GameObject self { get; private set; }
     [field: SerializeField]
-    public Button[] buttons { get; private set; } = new Button[9];
+    public Button[] quizChoices { get; private set; } = new Button[9];
     [field: SerializeField]
     public Image[] images { get; private set; } = new Image[9];
+    [field: SerializeField]
+    public TextMeshProUGUI quizSentence { get; private set; }
+    [field: SerializeField]
+    public Button judge { get; private set; }
+    [field: SerializeField]
+    public TextMeshProUGUI wrongText { get; private set; }
+
 
     private CancellationTokenSource cancellationTokenSource = new();
 
@@ -35,6 +43,7 @@ public class GameView : MonoBehaviour, IView
         ConvertQuiz(gameModel, quizTemplates);
 #pragma warning restore CS4014 // この呼び出しは待機されなかったため、現在のメソッドの実行は呼び出しの完了を待たずに続行されます
 
+        quizSentence.text = quizTemplates[gameModel.quizNum[0] - 1].text;
         TransitionGameScreen(self);
     }
 
@@ -44,13 +53,14 @@ public class GameView : MonoBehaviour, IView
         images[num].enabled = !images[num].enabled;
 
         bool enable = images[num].enabled;
-        // ボタンのサイズを小さくするコルーチンを作成(UniTask)
         for (int i = 0; i < 10; i++)
         {
             if (enable)
-                buttons[num].gameObject.transform.localScale = new Vector2(buttons[num].gameObject.transform.localScale.x - 0.025f, buttons[num].gameObject.transform.localScale.y - 0.025f);
+                quizChoices[num].gameObject.transform.localScale = 
+                    new Vector2(quizChoices[num].gameObject.transform.localScale.x - 0.025f, quizChoices[num].gameObject.transform.localScale.y - 0.025f);
             else
-                buttons[num].gameObject.transform.localScale = new Vector2(buttons[num].gameObject.transform.localScale.x + 0.025f, buttons[num].gameObject.transform.localScale.y + 0.025f);
+                quizChoices[num].gameObject.transform.localScale = 
+                    new Vector2(quizChoices[num].gameObject.transform.localScale.x + 0.025f, quizChoices[num].gameObject.transform.localScale.y + 0.025f);
             
             await UniTask.DelayFrame(1, cancellationToken: ct);
 
@@ -70,22 +80,28 @@ public class GameView : MonoBehaviour, IView
         {
             for (int i = 0; i < 9; i++)
             {
-                imageNames.Add(ConvertDoubleDigitNum(num) + "_" + ConvertDoubleDigitNum(quizTemplates[num - 1].usedImageList[i]));
+                imageNames.Add(ConvertDoubleDigitNum(num) + "_" + ConvertDoubleDigitNum(quizTemplates[num - 1].usedImageList[i].useImageNum));
             }
         }
         imageNames.Add("checkmark");
 
         List<Sprite> sprites = await LoadFromFileManager.LoadAssets(imageNames);
 
-        for (int i = 0; i < buttons.Length; i++)
+        for (int i = 0; i < quizChoices.Length; i++)
         {
-            buttons[i].image.sprite = sprites[i];
+            quizChoices[i].image.sprite = sprites[i];
 
             // 最後尾に格納したチェックマークの画像をここにすべて格納する、もう少し良いやり方模索中
             images[i].sprite = sprites[sprites.Count - 1];
         }
 
         LoadFromFileManager.Unload();
+    }
+
+    public void WrongAnswer()
+    {
+        // 間違えた際に赤文字を表示
+        wrongText.enabled = true;
     }
 
     private string ConvertDoubleDigitNum(int num)
