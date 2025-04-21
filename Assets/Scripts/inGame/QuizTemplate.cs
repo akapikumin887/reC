@@ -58,7 +58,7 @@ public class QuizTemplate
                 // “¯‚¶‰æ‘œ‚ğ•¡”‘I‘ğˆ‚ÉŠÜ‚Ş–â‘è‚È‚Ì‚ÅA”í‚è‚ ‚è‚Åƒ‰ƒ“ƒ_ƒ€‚ÉŠi”[‚·‚é
                 System.Random random = new();
                 int num = random.Next(1, imageCount + 1);
-                usedImageList.Add(new UseImageMap(num, answerImageCount.Contains(i)));
+                usedImageList.Add(new UseImageMap(num, answerImageCount.Contains(num)));
             }
         }
         else if (answerImageCount.Count < imageCount)

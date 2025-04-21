@@ -17,7 +17,7 @@ public class GameView : MonoBehaviour, IView
     [field: SerializeField]
     public Button[] quizChoices { get; private set; } = new Button[9];
     [field: SerializeField]
-    public Image[] images { get; private set; } = new Image[9];
+    public Image[] checkImages { get; private set; } = new Image[9];
     [field: SerializeField]
     public TextMeshProUGUI quizSentence { get; private set; }
     [field: SerializeField]
@@ -25,6 +25,10 @@ public class GameView : MonoBehaviour, IView
     [field: SerializeField]
     public TextMeshProUGUI wrongText { get; private set; }
 
+    private Sprite[] quizImageStrage = new Sprite[27];
+
+    private Vector2 selectedImageScale= new Vector2(0.75f, 0.75f);
+    private Vector2 nonSelectedImageScale = new Vector2(1.0f, 1.0f);
 
     private CancellationTokenSource cancellationTokenSource = new();
 
@@ -43,17 +47,17 @@ public class GameView : MonoBehaviour, IView
         ConvertQuiz(gameModel, quizTemplates);
 #pragma warning restore CS4014 // この呼び出しは待機されなかったため、現在のメソッドの実行は呼び出しの完了を待たずに続行されます
 
-        quizSentence.text = quizTemplates[gameModel.quizNum[0] - 1].text;
+        quizSentence.text = quizTemplates[gameModel.quizNum[0]].text;
         TransitionGameScreen(self);
     }
 
     public async UniTask ExchangeCheckmark(int num, CancellationToken ct = default)
     {
         // チェックマークの付与
-        images[num].enabled = !images[num].enabled;
+        checkImages[num].enabled = !checkImages[num].enabled;
 
-        bool enable = images[num].enabled;
-        for (int i = 0; i < 10; i++)
+        bool enable = checkImages[num].enabled;
+        for (int i = 0; i < ChangeButtonFrame; i++)
         {
             if (enable)
                 quizChoices[num].gameObject.transform.localScale = 
@@ -63,8 +67,12 @@ public class GameView : MonoBehaviour, IView
                     new Vector2(quizChoices[num].gameObject.transform.localScale.x + 0.025f, quizChoices[num].gameObject.transform.localScale.y + 0.025f);
             
             await UniTask.DelayFrame(1, cancellationToken: ct);
-
         }
+
+        if (enable)
+            quizChoices[num].gameObject.transform.localScale = selectedImageScale;
+        else
+            quizChoices[num].gameObject.transform.localScale = nonSelectedImageScale;
     }
 
     public void TransitionGameScreen(GameObject obj)
@@ -80,28 +88,45 @@ public class GameView : MonoBehaviour, IView
         {
             for (int i = 0; i < 9; i++)
             {
-                imageNames.Add(ConvertDoubleDigitNum(num) + "_" + ConvertDoubleDigitNum(quizTemplates[num - 1].usedImageList[i].useImageNum));
+                imageNames.Add(ConvertDoubleDigitNum(num) + "_" + ConvertDoubleDigitNum(quizTemplates[num].usedImageList[i].useImageNum));
             }
         }
         imageNames.Add("checkmark");
 
         List<Sprite> sprites = await LoadFromFileManager.LoadAssets(imageNames);
 
+        for (int i = 0; i < quizImageStrage.Length; i++)
+        {
+            quizImageStrage[i] = sprites[i];
+        }
+        LoadFromFileManager.Unload();
+
         for (int i = 0; i < quizChoices.Length; i++)
         {
-            quizChoices[i].image.sprite = sprites[i];
+            quizChoices[i].image.sprite = quizImageStrage[i];
 
-            // 最後尾に格納したチェックマークの画像をここにすべて格納する、もう少し良いやり方模索中
-            images[i].sprite = sprites[sprites.Count - 1];
+            // 最後尾に格納したチェックマークの画像をここにすべて格納する
+            checkImages[i].sprite = sprites[sprites.Count - 1];
         }
-
-        LoadFromFileManager.Unload();
     }
 
     public void WrongAnswer()
     {
-        // 間違えた際に赤文字を表示
         wrongText.enabled = true;
+    }
+
+    public void CorrectAnswer(GameModel model, QuizTemplate quizTemplate)
+    {
+        wrongText.enabled = false;
+
+        for (int i = 0; i < 9; i++)
+        {
+            int num = (model.nowQuizCount) * 9 + i;
+            quizChoices[i].image.sprite = quizImageStrage[num];
+            quizChoices[i].gameObject.transform.localScale = nonSelectedImageScale;
+            checkImages[i].enabled = false;
+        }
+        quizSentence.text = quizTemplate.text;
     }
 
     private string ConvertDoubleDigitNum(int num)

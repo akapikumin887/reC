@@ -11,16 +11,22 @@ public class GameModel : IModel
     private readonly int QUIZ_COUNT = 3;
     private SpreadsheetReader spreadsheetReader;
     private StringReader reader;
+    public int nowQuizCount;
 
     public List<int> quizNum { get; private set; } = new();
     private bool[] selected = new bool[9];
 
     public Subject<Unit> wrongSubject = new();
+    public Subject<GameModel> nextQuizSubject = new();
 
-    public void Initialize() { }
+    public void Initialize() 
+    {
+        nowQuizCount = 1;
+    }
 
     public void Initialize(ref List<QuizTemplate> quizTemplates)
     {
+        nowQuizCount = 1;
         for (int i = 0; i < selected.Length; i++)
         {
             selected[i] = false;
@@ -86,10 +92,9 @@ public class GameModel : IModel
 
     public void JudgeQuiz(List<QuizTemplate> quizTemplates)
     {
-        Debug.Log(quizTemplates[quizNum[0] - 1]);
         for(int i = 0;i < selected.Length;i++)
         {
-            if (selected[i] != quizTemplates[quizNum[0] - 1].usedImageList[i].isCorrect)
+            if (selected[i] != quizTemplates[quizNum[0]].usedImageList[i].isCorrect)
             {
                 // •s³‰ð‚È‚Ì‚ÅÔŽš‚ÅŒx‚ðo‚·
                 wrongSubject.OnNext(Unit.Default);
@@ -98,11 +103,18 @@ public class GameModel : IModel
         }
 
         // ³‰ð‚È‚Ì‚ÅŽŸ‚Ì–â‘è‚ðo‚·
-
+        nextQuizSubject.OnNext(this);
     }
 
-    public IObservable<Unit> wrongAnswer
+    public IObservable<Unit> WrongAnswer
     {
         get { return wrongSubject; }
     }
+
+    public IObservable<GameModel> CorrectAnswer
+    {
+        get{ return nextQuizSubject; }
+    }
+
+
 }

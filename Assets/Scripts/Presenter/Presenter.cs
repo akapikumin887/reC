@@ -51,10 +51,6 @@ public class Presenter : MonoBehaviour
             gameModel.Initialize(ref quizTemplates);
             gameView.Initialize(gameModel, quizTemplates);
 
-            Debug.Log("1問目 : " + gameModel.quizNum[0]);
-            Debug.Log("2問目 : " + gameModel.quizNum[1]);
-            Debug.Log("3問目 : " + gameModel.quizNum[2]);
-
             for (int i = 0; i < gameView.quizChoices.Length; i++)
             {
                 int index = i;
@@ -76,6 +72,13 @@ public class Presenter : MonoBehaviour
 
             // 確認ボタン押下時不正解の際の判定
             gameModel.wrongSubject.Subscribe(_ => gameView.WrongAnswer()).AddTo(gameObject);
+
+            // 確認ボタン押下時正解の際の判定
+            gameModel.nextQuizSubject.Subscribe(model =>
+            {
+                gameModel.nowQuizCount++;
+                gameView.CorrectAnswer(model, quizTemplates[gameModel.quizNum[gameModel.nowQuizCount]]);
+            }).AddTo(gameObject);
         }
     }
 }
