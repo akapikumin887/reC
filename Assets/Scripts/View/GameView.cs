@@ -47,7 +47,7 @@ public class GameView : MonoBehaviour, IView
         ConvertQuiz(gameModel, quizTemplates);
 #pragma warning restore CS4014 // この呼び出しは待機されなかったため、現在のメソッドの実行は呼び出しの完了を待たずに続行されます
 
-        quizSentence.text = quizTemplates[gameModel.quizNum[0]].text;
+        quizSentence.text = quizTemplates[gameModel.quizNum[gameModel.nowQuizCount]].text;
         TransitionGameScreen(self);
     }
 
@@ -61,10 +61,12 @@ public class GameView : MonoBehaviour, IView
         {
             if (enable)
                 quizChoices[num].gameObject.transform.localScale = 
-                    new Vector2(quizChoices[num].gameObject.transform.localScale.x - 0.025f, quizChoices[num].gameObject.transform.localScale.y - 0.025f);
+                    new Vector2(quizChoices[num].gameObject.transform.localScale.x - ChangeButtonSizeSpeed, 
+                                quizChoices[num].gameObject.transform.localScale.y - ChangeButtonSizeSpeed);
             else
                 quizChoices[num].gameObject.transform.localScale = 
-                    new Vector2(quizChoices[num].gameObject.transform.localScale.x + 0.025f, quizChoices[num].gameObject.transform.localScale.y + 0.025f);
+                    new Vector2(quizChoices[num].gameObject.transform.localScale.x + ChangeButtonSizeSpeed, 
+                                quizChoices[num].gameObject.transform.localScale.y + ChangeButtonSizeSpeed);
             
             await UniTask.DelayFrame(1, cancellationToken: ct);
         }

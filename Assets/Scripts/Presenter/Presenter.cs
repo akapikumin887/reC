@@ -76,7 +76,7 @@ public class Presenter : MonoBehaviour
             // 確認ボタン押下時正解の際の判定
             gameModel.nextQuizSubject.Subscribe(model =>
             {
-                gameModel.nowQuizCount++;
+                gameModel.CorrectAnswer();
                 gameView.CorrectAnswer(model, quizTemplates[gameModel.quizNum[gameModel.nowQuizCount]]);
             }).AddTo(gameObject);
         }

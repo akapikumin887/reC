@@ -21,12 +21,12 @@ public class GameModel : IModel
 
     public void Initialize() 
     {
-        nowQuizCount = 1;
+        nowQuizCount = 0;
     }
 
     public void Initialize(ref List<QuizTemplate> quizTemplates)
     {
-        nowQuizCount = 1;
+        nowQuizCount = 0;
         for (int i = 0; i < selected.Length; i++)
         {
             selected[i] = false;
@@ -94,7 +94,7 @@ public class GameModel : IModel
     {
         for(int i = 0;i < selected.Length;i++)
         {
-            if (selected[i] != quizTemplates[quizNum[0]].usedImageList[i].isCorrect)
+            if (selected[i] != quizTemplates[quizNum[nowQuizCount]].usedImageList[i].isCorrect)
             {
                 // •s³‰ð‚È‚Ì‚ÅÔŽš‚ÅŒx‚ðo‚·
                 wrongSubject.OnNext(Unit.Default);
@@ -106,12 +106,21 @@ public class GameModel : IModel
         nextQuizSubject.OnNext(this);
     }
 
-    public IObservable<Unit> WrongAnswer
+    public void CorrectAnswer()
+    {
+        nowQuizCount++;
+        for (int i = 0; i < selected.Length; i++)
+        {
+            selected[i] = false;
+        }
+    }
+
+    public IObservable<Unit> WrongSubject
     {
         get { return wrongSubject; }
     }
 
-    public IObservable<GameModel> CorrectAnswer
+    public IObservable<GameModel> NextQuizSubject
     {
         get{ return nextQuizSubject; }
     }
