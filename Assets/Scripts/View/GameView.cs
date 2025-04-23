@@ -13,8 +13,6 @@ public class GameView : MonoBehaviour, IView
     [SerializeField]
     private float ChangeButtonFrame;
     [field: SerializeField]
-    public GameObject self { get; private set; }
-    [field: SerializeField]
     public Button[] quizChoices { get; private set; } = new Button[9];
     [field: SerializeField]
     public Image[] checkImages { get; private set; } = new Image[9];
@@ -32,8 +30,6 @@ public class GameView : MonoBehaviour, IView
 
     private CancellationTokenSource cancellationTokenSource = new();
 
-    public void Initialize() { }
-
     public void Initialize(GameModel gameModel, List<QuizTemplate> quizTemplates)
     {
         if(gameModel.quizNum.Count == 0)
@@ -43,12 +39,10 @@ public class GameView : MonoBehaviour, IView
         }
 
         // AssetBundleを使って画像の読み込みを行う
-#pragma warning disable CS4014 // この呼び出しは待機されなかったため、現在のメソッドの実行は呼び出しの完了を待たずに続行されます
-        ConvertQuiz(gameModel, quizTemplates);
-#pragma warning restore CS4014 // この呼び出しは待機されなかったため、現在のメソッドの実行は呼び出しの完了を待たずに続行されます
+        ConvertQuiz(gameModel, quizTemplates).Forget();
 
         quizSentence.text = quizTemplates[gameModel.quizNum[gameModel.nowQuizCount]].text;
-        TransitionGameScreen(self);
+        TransitionGameScreen(gameObject);
     }
 
     public async UniTask ExchangeCheckmark(int num, CancellationToken ct = default)

@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-public interface IModel
+public interface IModel : IDisposable
 {
-    public void Initialize();
+
 }

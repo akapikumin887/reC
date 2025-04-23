@@ -1,19 +1,25 @@
 using UnityEngine;
 using UniRx;
 using Cysharp.Threading.Tasks;
+using System.IO;
 
 public class TitleModel : IModel
 {
-    //public ReactiveProperty<int> PushCounter { get; private set; }
-
-    public TitleModel()
+    public async UniTask<StringReader> StartGame()
     {
-        //PushCounter = new ReactiveProperty<int>();
+        // 問題が格納されているスプレッドシートの情報を取得
+        StringReader reader = new(await SpreadsheetReader.LoadSpreadSheet());
+
+        if (reader == null)
+        {
+            Debug.Log("エラーが発生しました");
+        }
+
+        return reader;
     }
 
-    public void Initialize()
+    public void Dispose()
     {
 
     }
-
 }

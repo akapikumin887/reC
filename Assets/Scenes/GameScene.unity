@@ -781,6 +781,7 @@ GameObject:
   - component: {fileID: 340860243}
   - component: {fileID: 340860242}
   - component: {fileID: 340860246}
+  - component: {fileID: 340860247}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -878,15 +879,27 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 340860241}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2cfa078b3ed551b4b857576030f9e629, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  titleObj: {fileID: 1661682884}
+  spreadSheetData: {fileID: 0}
   titleView: {fileID: 1661682886}
-  gameObj: {fileID: 1068325844}
-  gameView: {fileID: 1068325846}
+--- !u!114 &340860247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340860241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af293f9071eebfd45a49d3563ece5a94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <titlePresenter>k__BackingField: {fileID: 1661682887}
+  <gamePresenter>k__BackingField: {fileID: 1068325847}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -2663,6 +2676,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1068325845}
+  - component: {fileID: 1068325847}
   - component: {fileID: 1068325846}
   m_Layer: 5
   m_Name: game
@@ -2720,7 +2734,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ChangeButtonSizeSpeed: 0.025
   ChangeButtonFrame: 10
-  <self>k__BackingField: {fileID: 1068325844}
   <quizChoices>k__BackingField:
   - {fileID: 97511241}
   - {fileID: 606205511}
@@ -2744,6 +2757,20 @@ MonoBehaviour:
   <quizSentence>k__BackingField: {fileID: 16511438}
   <judge>k__BackingField: {fileID: 1490224990}
   <wrongText>k__BackingField: {fileID: 1948175276}
+--- !u!114 &1068325847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1068325844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28943f5c04310d645ba05b35e45fb52d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spreadSheetData: {fileID: 11400000, guid: 102a72305a715a14182537e4ca2b42e2, type: 2}
+  gameView: {fileID: 1068325846}
 --- !u!1 &1080329224
 GameObject:
   m_ObjectHideFlags: 0
@@ -4413,6 +4440,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1661682885}
+  - component: {fileID: 1661682887}
   - component: {fileID: 1661682886}
   m_Layer: 5
   m_Name: title
@@ -4454,8 +4482,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601cdebd79dc2d94f85cd23f1d29102a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <self>k__BackingField: {fileID: 1661682884}
   <startButton>k__BackingField: {fileID: 1551880411}
+--- !u!114 &1661682887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661682884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cfa078b3ed551b4b857576030f9e629, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spreadSheetData: {fileID: 11400000, guid: 102a72305a715a14182537e4ca2b42e2, type: 2}
+  titleView: {fileID: 1661682886}
 --- !u!1 &1739004866
 GameObject:
   m_ObjectHideFlags: 0
@@ -4465,7 +4506,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1739004867}
-  - component: {fileID: 1739004868}
   m_Layer: 5
   m_Name: result
   m_TagString: Untagged
@@ -4495,20 +4535,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1739004868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1739004866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 601cdebd79dc2d94f85cd23f1d29102a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <self>k__BackingField: {fileID: 0}
-  <startButton>k__BackingField: {fileID: 0}
 --- !u!1 &1746479820
 GameObject:
   m_ObjectHideFlags: 0

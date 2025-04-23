@@ -9,8 +9,6 @@ using UnityEngine;
 public class GameModel : IModel
 {
     private readonly int QUIZ_COUNT = 3;
-    private SpreadsheetReader spreadsheetReader;
-    private StringReader reader;
     public int nowQuizCount;
 
     public List<int> quizNum { get; private set; } = new();
@@ -19,40 +17,20 @@ public class GameModel : IModel
     public Subject<Unit> wrongSubject = new();
     public Subject<GameModel> nextQuizSubject = new();
 
-    public void Initialize() 
+    public void Initialize(ref List<QuizTemplate> quizTemplates, StringReader reader)
     {
         nowQuizCount = 0;
-    }
 
-    public void Initialize(ref List<QuizTemplate> quizTemplates)
-    {
-        nowQuizCount = 0;
         for (int i = 0; i < selected.Length; i++)
         {
             selected[i] = false;
         }
 
-
-        SetQuiz(ref quizTemplates);
+        SetQuiz(ref quizTemplates, reader);
         ChoiceQuiz(quizTemplates);
     }
 
-    public async UniTask<bool> StartGame()
-    {
-        // 問題が格納されているスプレッドシートの情報を取得
-        spreadsheetReader = new();
-        reader = new(await spreadsheetReader.LoadSpreadSheet());
-
-        if (reader == null)
-        {
-            Debug.Log("エラーが発生しました");
-            return false;
-        }
-
-        return true;
-    }
-
-    private void SetQuiz(ref List<QuizTemplate> quizTemplates)
+    private void SetQuiz(ref List<QuizTemplate> quizTemplates, StringReader reader)
     {
         for (int i = 0; i < 25; i++)
         {
@@ -113,6 +91,11 @@ public class GameModel : IModel
         {
             selected[i] = false;
         }
+    }
+
+    public void Dispose()
+    {
+        
     }
 
     public IObservable<Unit> WrongSubject

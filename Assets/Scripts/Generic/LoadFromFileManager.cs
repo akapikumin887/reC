@@ -34,6 +34,8 @@ public static class LoadFromFileManager
             sprites.Add(sprite);
         }
 
+        await UniTask.CompletedTask;
+
         return sprites;
     }
 

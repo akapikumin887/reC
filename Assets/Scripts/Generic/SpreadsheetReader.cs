@@ -11,12 +11,7 @@ public class SpreadsheetReader
     private const string SHEET_ID = "13sFtz09L6QBPvxYXgkDUIXzI4HIRzUu-IMH3ueCbIKo";
     private const string SHEET_NAME = "01_question";
     
-    public SpreadsheetReader()
-    {
-
-    }
-
-    public async UniTask<string> LoadSpreadSheet()
+    public static async UniTask<string> LoadSpreadSheet()
     {
         UnityWebRequest request = UnityWebRequest.Get("https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/gviz/tq?tqx=out:csv&sheet=" + SHEET_NAME);
 
@@ -25,7 +20,6 @@ public class SpreadsheetReader
         
         switch(request.result)
         {
-
             case UnityWebRequest.Result.InProgress:
                 Debug.Log("リクエスト中");
                 break;
