@@ -900,6 +900,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <titlePresenter>k__BackingField: {fileID: 1661682887}
   <gamePresenter>k__BackingField: {fileID: 1068325847}
+  <resultPresenter>k__BackingField: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
