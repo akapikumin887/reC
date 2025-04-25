@@ -2,9 +2,8 @@ using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Networking;
 
-public static class LoadFromFileManager
+public class LoadFromFileManager
 {
     private static AssetBundle assetBundle;
 
@@ -26,7 +25,6 @@ public static class LoadFromFileManager
         assetBundle = (req.downloadHandler as DownloadHandlerAssetBundle).assetBundle;
 
 #endif
-
         List<Sprite> sprites = new();
         for (int i = 0; i < fileNames.Count; i++)
         {
@@ -39,6 +37,11 @@ public static class LoadFromFileManager
         return sprites;
     }
 
+    ~LoadFromFileManager()
+    {
+        Dispose();
+    }
+
     public static void Unload()
     {
         assetBundle.Unload(false);
@@ -46,6 +49,7 @@ public static class LoadFromFileManager
 
     public static void Dispose()
     {
-        assetBundle.Unload(true);
+        if (assetBundle != null)
+            assetBundle.Unload(true);
     }
 }
