@@ -1,35 +1,33 @@
 using Cysharp.Threading.Tasks;
-using System.Collections.Generic;
-using System.IO;
 using UniRx;
 using UnityEngine;
 
 public class GamePresenter : MonoBehaviour, IPresenter
 {
-    [field : SerializeField]
+    [SerializeField]
     private SpreadSheetData spreadSheetData;
 
     private Director director;
 
     [SerializeField]
     private GameView gameView;
+    public GameView _GameView => gameView;
+
     private GameModel gameModel;
-    private List<QuizTemplate> quizTemplates;
 
     public void Initialize(Director d)
     {
         director = d;
 
         gameModel = new();
-        quizTemplates = new();
 
-        gameModel.Initialize(ref quizTemplates, spreadSheetData.reader);
-        gameView.Initialize(gameModel, quizTemplates);
+        gameModel.Initialize(spreadSheetData.quizTemplates);
+        gameView.Initialize(spreadSheetData.quizTemplates, gameModel.quizNum, gameModel.nowQuizCount);
 
-        for (int i = 0; i < gameView.quizChoices.Length; i++)
+        for (int i = 0; i < gameView._QuizChoices.Length; i++)
         {
             int index = i;
-            gameView.quizChoices[index].OnClickAsObservable().Subscribe(_ =>
+            gameView._QuizChoices[index].OnClickAsObservable().Subscribe(_ =>
             {
                 gameView.ExchangeCheckmark(index).Forget();
                 gameModel.SelectImages(index);
@@ -37,9 +35,9 @@ public class GamePresenter : MonoBehaviour, IPresenter
         }
 
         // ³Œë”»’è
-        gameView.judge.OnClickAsObservable().Subscribe(_ =>
+        gameView._Judge.OnClickAsObservable().Subscribe(_ =>
         {
-            gameModel.JudgeQuiz(quizTemplates);
+            gameModel.JudgeQuiz(spreadSheetData.quizTemplates);
         }).AddTo(gameObject);
 
         // •s³‰ðˆ—
@@ -49,7 +47,14 @@ public class GamePresenter : MonoBehaviour, IPresenter
         gameModel.nextQuizSubject.Subscribe(model =>
         {
             gameModel.CorrectAnswer();
-            gameView.CorrectAnswer(model, quizTemplates[gameModel.quizNum[gameModel.nowQuizCount]]);
+            gameView.CorrectAnswer(model, spreadSheetData.quizTemplates[gameModel.quizNum[gameModel.nowQuizCount]]);
+        }).AddTo(gameObject);
+
+        // ƒŠƒUƒ‹ƒg‘JˆÚ
+        gameModel.resultTransitionSubject.Subscribe(model =>
+        {
+            gameView.TransitionScene(false);
+            director.ChangePresenter(director._ResultPresenter);
         }).AddTo(gameObject);
     }
 

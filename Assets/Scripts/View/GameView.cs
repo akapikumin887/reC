@@ -12,16 +12,21 @@ public class GameView : MonoBehaviour, IView
     private float ChangeButtonSizeSpeed;
     [SerializeField]
     private float ChangeButtonFrame;
-    [field: SerializeField]
-    public Button[] quizChoices { get; private set; } = new Button[9];
-    [field: SerializeField]
-    public Image[] checkImages { get; private set; } = new Image[9];
-    [field: SerializeField]
-    public TextMeshProUGUI quizSentence { get; private set; }
-    [field: SerializeField]
-    public Button judge { get; private set; }
-    [field: SerializeField]
-    public TextMeshProUGUI wrongText { get; private set; }
+    [SerializeField]
+    private Button[] quizChoices = new Button[9];
+    public Button[] _QuizChoices => quizChoices;
+    [SerializeField]
+    private Image[] checkImages = new Image[9];
+    public Image[] _CheckImages => checkImages;
+    [SerializeField]
+    private TextMeshProUGUI quizSentence;
+    public TextMeshProUGUI _QuizSentence => quizSentence;
+    [SerializeField]
+    private Button judge;
+    public Button _Judge => judge;
+    [SerializeField]
+    private TextMeshProUGUI wrongText;
+    public TextMeshProUGUI _WrongText => wrongText;
 
     private Sprite[] quizImageStrage = new Sprite[27];
 
@@ -30,22 +35,22 @@ public class GameView : MonoBehaviour, IView
 
     private CancellationTokenSource cancellationTokenSource = new();
 
-    public void Initialize(GameModel gameModel, List<QuizTemplate> quizTemplates)
+    public void Initialize(List<QuizTemplate> quizTemplates, List<int> quizNum, int nowQuizCount)
     {
-        if(gameModel.quizNum.Count == 0)
+        if(quizNum.Count == 0)
         {
             Debug.Log("問題が設定されていません");
             return;
         }
 
         // AssetBundleを使って画像の読み込みを行う
-        ConvertQuiz(gameModel, quizTemplates).Forget();
+        ConvertQuiz(quizNum, quizTemplates).Forget();
 
-        quizSentence.text = quizTemplates[gameModel.quizNum[gameModel.nowQuizCount]].text;
-        TransitionGameScreen(gameObject);
+        quizSentence.text = quizTemplates[quizNum[nowQuizCount]].text;
+        TransitionScene(true);
     }
 
-    public async UniTask ExchangeCheckmark(int num, CancellationToken ct = default)
+    public async UniTaskVoid ExchangeCheckmark(int num, CancellationToken ct = default)
     {
         // チェックマークの付与
         checkImages[num].enabled = !checkImages[num].enabled;
@@ -71,16 +76,16 @@ public class GameView : MonoBehaviour, IView
             quizChoices[num].gameObject.transform.localScale = nonSelectedImageScale;
     }
 
-    public void TransitionGameScreen(GameObject obj)
+    public void TransitionScene(bool flag)
     {
-        obj.SetActive(true);
+        gameObject.SetActive(flag);
     }
 
-    private async UniTask ConvertQuiz(GameModel gameModel, List<QuizTemplate> quizTemplates)
+    private async UniTask ConvertQuiz(List<int> quizNum, List<QuizTemplate> quizTemplates)
     {
         List<string> imageNames = new();
 
-        foreach (int num in gameModel.quizNum)
+        foreach (int num in quizNum)
         {
             for (int i = 0; i < 9; i++)
             {
@@ -102,7 +107,7 @@ public class GameView : MonoBehaviour, IView
             quizChoices[i].image.sprite = quizImageStrage[i];
 
             // 最後尾に格納したチェックマークの画像をここにすべて格納する
-            checkImages[i].sprite = sprites[sprites.Count - 1];
+            checkImages[i].sprite = sprites[^1];
         }
     }
 

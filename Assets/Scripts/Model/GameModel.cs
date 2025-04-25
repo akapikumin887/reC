@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +7,7 @@ using UnityEngine;
 
 public class GameModel : IModel
 {
-    private readonly int QUIZ_COUNT = 3;
+    private static readonly int QUIZ_COUNT = 3;
     public int nowQuizCount;
 
     public List<int> quizNum { get; private set; } = new();
@@ -16,8 +15,9 @@ public class GameModel : IModel
 
     public Subject<Unit> wrongSubject = new();
     public Subject<GameModel> nextQuizSubject = new();
+    public Subject<Unit> resultTransitionSubject = new();
 
-    public void Initialize(ref List<QuizTemplate> quizTemplates, StringReader reader)
+    public void Initialize(List<QuizTemplate> quizTemplates)
     {
         nowQuizCount = 0;
 
@@ -26,21 +26,7 @@ public class GameModel : IModel
             selected[i] = false;
         }
 
-        SetQuiz(ref quizTemplates, reader);
         ChoiceQuiz(quizTemplates);
-    }
-
-    private void SetQuiz(ref List<QuizTemplate> quizTemplates, StringReader reader)
-    {
-        for (int i = 0; i < 25; i++)
-        {
-            // 問題文の数だけループを回し、初期化する
-            string line = reader.ReadLine().Replace("\"", "");
-            if (!Regex.IsMatch(line, "選択|筆記|パズル"))
-                continue;
-
-            quizTemplates.Add(new QuizTemplate(line));
-        }
     }
 
     private void ChoiceQuiz(List<QuizTemplate> quizTemplates)
@@ -63,6 +49,7 @@ public class GameModel : IModel
             }
         }
     }
+
     public void SelectImages(int num)
     {
         selected[num] = !selected[num];
@@ -80,8 +67,17 @@ public class GameModel : IModel
             }
         }
 
-        // 正解なので次の問題を出す
-        nextQuizSubject.OnNext(this);
+        if (nowQuizCount >= 2)
+        {
+            // 最後の問題なのでリザルト画面へ移行する
+            resultTransitionSubject.OnNext(Unit.Default);
+        }
+        else
+        {
+            // 正解なので次の問題を出す
+            nextQuizSubject.OnNext(this);
+        }
+
     }
 
     public void CorrectAnswer()
@@ -98,15 +94,9 @@ public class GameModel : IModel
         
     }
 
-    public IObservable<Unit> WrongSubject
-    {
-        get { return wrongSubject; }
-    }
+    public IObservable<Unit> WrongSubject => wrongSubject;
 
-    public IObservable<GameModel> NextQuizSubject
-    {
-        get{ return nextQuizSubject; }
-    }
+    public IObservable<GameModel> NextQuizSubject => nextQuizSubject;
 
-
+    public IObservable<Unit> ResultTransitionSubject => resultTransitionSubject;
 }

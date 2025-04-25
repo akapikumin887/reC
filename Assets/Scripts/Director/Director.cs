@@ -2,16 +2,19 @@ using UnityEngine;
 
 public class Director : MonoBehaviour
 {
-    public IPresenter correntPresenter {  get; private set; }
+    private IPresenter correntPresenter;
 
-    [field: SerializeField]
-    public TitlePresenter titlePresenter { get; private set; }
+    [SerializeField]
+    private TitlePresenter titlePresenter;
+    public TitlePresenter _TitlePresenter => titlePresenter;
 
-    [field: SerializeField]
-    public GamePresenter gamePresenter { get; private set; }
+    [SerializeField]
+    private GamePresenter gamePresenter;
+    public GamePresenter _GamePresenter => gamePresenter;
 
-    [field: SerializeField]
-    public ResultPresenter resultPresenter { get; private set; }
+    [SerializeField]
+    private ResultPresenter resultPresenter;
+    public ResultPresenter _ResultPresenter => resultPresenter;
 
     private void Start()
     {

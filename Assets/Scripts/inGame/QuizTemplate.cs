@@ -14,9 +14,6 @@ public class QuizTemplate
     public List<int> answerImageCount { get; } = new List<int>();
     public List<UseImageMap> usedImageList { get; }
 
-    [field: SerializeField]
-    public Image[] images { get; private set; } = new Image[9];
-
     private QuizTemplate() {}
 
     public QuizTemplate(string line)

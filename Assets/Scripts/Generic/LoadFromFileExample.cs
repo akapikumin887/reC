@@ -17,7 +17,7 @@ public class LoadFromFileExample : MonoBehaviour
 
         if (assetBundle == null)
         {
-            Debug.Log("AssetBundleのロードに失敗しました！");
+            Debug.Log("AssetBundleのロードに失敗しました");
             return;
         }
 

@@ -1,9 +1,9 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Scriptable")]
 public class SpreadSheetData : ScriptableObject
 {
-    [SerializeField]
-    public StringReader reader { get; set; }
+    public List<QuizTemplate> quizTemplates { get; set; }
 }
