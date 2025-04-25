@@ -12,8 +12,8 @@ public class ResultView : MonoBehaviour, IView
         gameObject.SetActive(flag);
     }
 
-    public void Dispose()
+    private void OnDestroy()
     {
-
+        
     }
 }

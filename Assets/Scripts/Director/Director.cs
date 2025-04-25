@@ -26,4 +26,9 @@ public class Director : MonoBehaviour
         correntPresenter = presenter;
         correntPresenter.Initialize(this);
     }
+
+    private void OnDestroy()
+    {
+        LoadFromFileManager.Dispose();
+    }
 }

@@ -20,18 +20,8 @@ public class TitleView : MonoBehaviour, IView
         gameObject.SetActive(flag);
     }
 
-    public void Dispose()
+    private void OnDestroy()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        // åªèÛÇÕëŒâûñ≥Çµ
-        if (disposing)
-        {
-
-        }
+        
     }
 }

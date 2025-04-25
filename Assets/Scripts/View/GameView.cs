@@ -140,17 +140,8 @@ public class GameView : MonoBehaviour, IView
         return str + num;
     }
 
-    public void Dispose()
+    private void OnDestroy()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
 
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            LoadFromFileManager.Dispose();
-        }
     }
 }
