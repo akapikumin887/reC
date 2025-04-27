@@ -17,15 +17,15 @@ public class GamePresenter : MonoBehaviour, IPresenter
 
     private GameModel gameModel;
 
-    private CompositeDisposable com;
+    private bool isSubscribe;
 
-    public GamePresenter()
+    private void Awake()
     {
+        isSubscribe = false;
     }
 
     public void Initialize(Director d)
     {
-        com = new CompositeDisposable();
         director = d;
 
         gameModel = new();
@@ -33,38 +33,47 @@ public class GamePresenter : MonoBehaviour, IPresenter
         gameModel.Initialize(spreadSheetData.quizTemplates);
         gameView.Initialize(spreadSheetData.quizTemplates, gameModel.quizNum, gameModel.nowQuizCount);
 
-        // 2T–Ú‚ÌÛ‚Í‰Ÿ‰ºŽž‚Ìˆ—‚ª”{‚Å“ü‚Á‚Ä‚µ‚Ü‚¤‚Ì‚Å‘Îô‚ª•K—v
+        AddSubject();
+    }
+
+    private void AddSubject()
+    {
+
+        // •s³‰ðˆ—
+        gameModel.wrongSubject.Subscribe(_ => gameView.WrongAnswer()).AddTo(gameObject);
+
+        // ³‰ðˆ—
+        gameModel.nextQuizSubject.Subscribe(model => {
+            gameModel.CorrectAnswer();
+            gameView.CorrectAnswer(model, spreadSheetData.quizTemplates[gameModel.quizNum[gameModel.nowQuizCount]]);
+        }).AddTo(gameObject);
+
+        // ƒŠƒUƒ‹ƒg‘JˆÚ
+        gameModel.resultTransitionSubject.Subscribe(model => {
+            gameView.TransitionScene(false);
+            director.ChangePresenter(director._ResultPresenter);
+        }).AddTo(gameObject);
+
+        if (isSubscribe)
+            return;
+
+        // ³Œë”»’è
+        gameView._Judge.OnClickAsObservable().Subscribe(_ => gameModel.JudgeQuiz(spreadSheetData.quizTemplates)).AddTo(gameObject);
+
         for (int i = 0; i < gameView._QuizChoices.Length; i++)
         {
             int index = i;
             gameView._QuizChoices[index].OnClickAsObservable().Subscribe(_ => {
                 gameView.ExchangeCheckmark(index).Forget();
                 gameModel.SelectImages(index);
-            }).AddTo(com);
+            }).AddTo(gameObject);
         }
 
-        // ³Œë”»’è
-        gameView._Judge.OnClickAsObservable().Subscribe(_ => gameModel.JudgeQuiz(spreadSheetData.quizTemplates)).AddTo(com);
-
-        // •s³‰ðˆ—
-        gameModel.wrongSubject.Subscribe(_ => gameView.WrongAnswer()).AddTo(com);
-
-        // ³‰ðˆ—
-        gameModel.nextQuizSubject.Subscribe(model => {
-            gameModel.CorrectAnswer();
-            gameView.CorrectAnswer(model, spreadSheetData.quizTemplates[gameModel.quizNum[gameModel.nowQuizCount]]);
-        }).AddTo(com);
-
-        // ƒŠƒUƒ‹ƒg‘JˆÚ
-        gameModel.resultTransitionSubject.Subscribe(model => {
-            gameView.TransitionScene(false);
-            director.ChangePresenter(director._ResultPresenter);
-            Dispose();
-        }).AddTo(com);
+        isSubscribe = true;
     }
 
-    public void Dispose()
+    private void OnDestroy()
     {
-        com.Clear();
+        
     }
 }

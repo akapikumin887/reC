@@ -10,7 +10,7 @@ public class GameModel : IModel
     private static readonly int QUIZ_COUNT = 3;
     public int nowQuizCount;
 
-    public List<int> quizNum { get; private set; } = new();
+    public List<int> quizNum { get; private set; }
     private bool[] selected = new bool[9];
 
     public Subject<Unit> wrongSubject = new();
@@ -19,6 +19,7 @@ public class GameModel : IModel
 
     public void Initialize(List<QuizTemplate> quizTemplates)
     {
+        quizNum = new();
         nowQuizCount = 0;
 
         for (int i = 0; i < selected.Length; i++)
@@ -42,7 +43,7 @@ public class GameModel : IModel
         System.Random rnd = new();
         while(quizNum.Count < QUIZ_COUNT)
         {
-            int num = rnd.Next(0, quizTemplates.Count);
+            int num = rnd.Next(0, quizTemplates.Count - 1);
             if (!quizNum.Contains(quizTemplates[num].number) && quizTemplates[num].used)
             {
                 quizNum.Add(quizTemplates[num].number);

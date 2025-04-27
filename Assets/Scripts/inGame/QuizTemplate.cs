@@ -1,8 +1,4 @@
-using System;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using System.Linq;
 
 public class QuizTemplate
 {
@@ -40,6 +36,13 @@ public class QuizTemplate
         if (imageCount == 0)
             return;
 
+        SetImages();
+    }
+
+    public void SetImages()
+    {
+        usedImageList.Clear();
+
         if (imageCount == 9)
         {
             for (int i = 1; i <= 9; i++)
@@ -72,13 +75,10 @@ public class QuizTemplate
                     if (usedImageList[i].useImageNum == num)
                         isAdd = false;
                 }
-                if(isAdd)
+                if (isAdd)
                     usedImageList.Add(new UseImageMap(num, answerImageCount.Contains(num)));
-
             }
-
         }
-
     }
 
     public class UseImageMap

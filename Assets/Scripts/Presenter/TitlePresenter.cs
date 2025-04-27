@@ -1,7 +1,6 @@
 using UnityEngine;
 using UniRx;
 using Cysharp.Threading.Tasks;
-using System.IO;
 
 public class TitlePresenter : MonoBehaviour, IPresenter
 {

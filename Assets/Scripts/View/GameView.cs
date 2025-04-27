@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -48,6 +49,12 @@ public class GameView : MonoBehaviour, IView
 
         quizSentence.text = quizTemplates[quizNum[nowQuizCount]].text;
         TransitionScene(true);
+
+        for(int i = 0; i < checkImages.Length; i++)
+        {
+            checkImages[i].enabled = false;
+            quizChoices[i].gameObject.transform.localScale = nonSelectedImageScale;
+        }
     }
 
     public async UniTaskVoid ExchangeCheckmark(int num, CancellationToken ct = default)
