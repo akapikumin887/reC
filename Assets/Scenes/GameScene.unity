@@ -4535,6 +4535,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 992b195b370115f48b7502af5b5cc358, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spreadSheetData: {fileID: 11400000, guid: 102a72305a715a14182537e4ca2b42e2, type: 2}
+  director: {fileID: 340860247}
   resultView: {fileID: 1739004869}
 --- !u!114 &1739004869
 MonoBehaviour:
@@ -4548,6 +4550,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d1fa3e864238094099b7360486bd9ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  retryButton: {fileID: 740974961}
+  titleButton: {fileID: 824056852}
 --- !u!1 &1746479820
 GameObject:
   m_ObjectHideFlags: 0
