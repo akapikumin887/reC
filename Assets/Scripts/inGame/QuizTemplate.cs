@@ -60,19 +60,21 @@ public class QuizTemplate
         }
         else if (answerImageCount.Count < imageCount)
         {
-            for (int i = 1; i <= 9; i++)
+            while (usedImageList.Count < 9)
             {
                 // ‘I‘ðŽˆ‚ª•\Ž¦‰æ‘œ”‚æ‚è‘½‚¢‚Ì‚ÅA”í‚è‚È‚µ‚Åƒ‰ƒ“ƒ_ƒ€‚ÉŠi”[‚·‚é
                 System.Random random = new();
                 int num = random.Next(1, imageCount + 1);
 
-                for (int j = 0; j < usedImageList.Count; j++)
+                bool isAdd = true;
+                for (int i = 0; i < usedImageList.Count; i++)
                 {
-                    if (usedImageList[j].useImageNum == num)
-                        continue;
-
-                    usedImageList.Add(new UseImageMap(i, answerImageCount.Contains(i)));
+                    if (usedImageList[i].useImageNum == num)
+                        isAdd = false;
                 }
+                if(isAdd)
+                    usedImageList.Add(new UseImageMap(num, answerImageCount.Contains(num)));
+
             }
 
         }
