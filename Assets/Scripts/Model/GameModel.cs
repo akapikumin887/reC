@@ -42,7 +42,7 @@ public class GameModel : IModel
         System.Random rnd = new();
         while(quizNum.Count < QUIZ_COUNT)
         {
-            int num = rnd.Next(1, quizTemplates.Count);
+            int num = rnd.Next(0, quizTemplates.Count);
             if (!quizNum.Contains(quizTemplates[num].number) && quizTemplates[num].used)
             {
                 quizNum.Add(quizTemplates[num].number);
