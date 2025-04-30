@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -9,6 +10,9 @@ using UnityEngine.UI;
 
 public class GameView : MonoBehaviour, IView
 {
+    [SerializeField]
+    private GameObject scene;
+
     [SerializeField]
     private float ChangeButtonSizeSpeed;
     [SerializeField]
@@ -48,7 +52,7 @@ public class GameView : MonoBehaviour, IView
         ConvertQuiz(quizNum, quizTemplates).Forget();
 
         quizSentence.text = quizTemplates[quizNum[nowQuizCount]].text;
-        TransitionScene(true);
+        gameObject.SetActive(true);
 
         for(int i = 0; i < checkImages.Length; i++)
         {
@@ -83,9 +87,9 @@ public class GameView : MonoBehaviour, IView
             quizChoices[num].gameObject.transform.localScale = nonSelectedImageScale;
     }
 
-    public void TransitionScene(bool flag)
+    public void TransitionScene()
     {
-        gameObject.SetActive(flag);
+        scene.transform.DOLocalMove(new Vector2(-220.0f, 0.0f), 0.5f).OnComplete(() => gameObject.SetActive(false));
     }
 
     private async UniTask ConvertQuiz(List<int> quizNum, List<QuizTemplate> quizTemplates)

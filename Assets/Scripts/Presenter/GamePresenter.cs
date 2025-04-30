@@ -38,7 +38,6 @@ public class GamePresenter : MonoBehaviour, IPresenter
 
     private void AddSubject()
     {
-
         // •s³‰ðˆ—
         gameModel.wrongSubject.Subscribe(_ => gameView.WrongAnswer()).AddTo(gameObject);
 
@@ -50,7 +49,7 @@ public class GamePresenter : MonoBehaviour, IPresenter
 
         // ƒŠƒUƒ‹ƒg‘JˆÚ
         gameModel.resultTransitionSubject.Subscribe(model => {
-            gameView.TransitionScene(false);
+            gameView.TransitionScene();
             director.ChangePresenter(director._ResultPresenter);
         }).AddTo(gameObject);
 

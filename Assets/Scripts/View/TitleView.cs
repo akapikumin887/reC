@@ -1,13 +1,15 @@
-using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TitleView : MonoBehaviour, IView
 {
     [SerializeField]
+    private GameObject scene;
+
+    [SerializeField]
     private Button startButton;
     public Button _StartButton => startButton;
-
 
     public void Initialize()
     {
@@ -16,8 +18,7 @@ public class TitleView : MonoBehaviour, IView
 
     public void TransitionScene(bool flag)
     {
-        // ‘JˆÚ‚ªŒ»ó‚ÍActive‚ÌØ‚è‘Ö‚¦‚¾‚¯‚¾‚ªA¶‚ÉˆÚ“®‚µ‚ÄÁ‚µ‚½‚¢
-        gameObject.SetActive(flag);
+        scene.transform.DOLocalMove(new Vector2(-110.0f, 0.0f), 0.5f).OnComplete(() => gameObject.SetActive(flag));
     }
 
     private void OnDestroy()

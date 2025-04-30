@@ -21,12 +21,12 @@ public class ResultPresenter : MonoBehaviour, IPresenter
 
         resultView._RetryButton.OnClickAsObservable().Subscribe(_ => {
             resultModel.ResetImages(spreadSheetData.quizTemplates);
-            resultView.TransitionScene(false);
+            resultView.TransitionSceneToGame();
             director.ChangePresenter(director._GamePresenter);
         }).AddTo(gameObject);
 
         resultView._TitleButton.OnClickAsObservable().Subscribe(_ => {
-            resultView.TransitionScene(false);
+            resultView.TransitionSceneToTitle();
             director.ChangePresenter(director._TitlePresenter);
         }).AddTo(gameObject);
     }
